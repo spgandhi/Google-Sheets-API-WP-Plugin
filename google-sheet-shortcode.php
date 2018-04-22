@@ -19,8 +19,8 @@ function google_sheets_shortcode()
             'table_id' => '',
             'table_class' => '',
             'offset' => 0,
-            'value-render-option' => '',
-            'date-time-render-option' => '',
+            'value-render-option' => 'FORMATTED_VALUE',
+            'date-time-render-option' => 'FORMATTED_STRING',
         ],
           $atts,
           $tag
