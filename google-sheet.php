@@ -30,13 +30,14 @@ class GoogleSheets
         $this->service = $service = new Google_Service_Sheets($client);
     }
 
-    public function get_spreadsheet_values($spreadsheetId, $range)
+    public function get_spreadsheet_values($spreadsheetId, $range, $optParams = [])
     { 
       try{
-        $response = $this->service->spreadsheets_values->get($spreadsheetId, $range);
+        $response = $this->service->spreadsheets_values->get($spreadsheetId, $range, $optParams);
         $values = $response->getValues();
         return $values;
       } catch (Exception $e){
+        var_dump($e);
         return false;
       }
     }
@@ -104,7 +105,10 @@ class GoogleSheets
                 if ($key === $emailRowIndex) {
                     $rowsHtml .= '<td>'.do_shortcode('[uffc_email email="'.$value.'"]').'</td>';
                 } else {
-                    $rowsHtml .= '<td>'.$value.'</td>';
+                  if($value[0] === '='){
+                    $value = $this->computeFormula($value);
+                  }
+                  $rowsHtml .= '<td>'.$value.'</td>';
                 }
             }
         
@@ -143,5 +147,24 @@ class GoogleSheets
 
         $result = $this->service->spreadsheets_values->update($spreadsheetId, $range, $body, $params);
         return $result;
+    }
+
+    public function computeFormula($data){
+  
+      $data = trim($data, "=");
+      
+      $formula = explode('(', $data);
+    
+      $type=$formula[0];
+      $content= trim($formula[1], ")");
+    
+      if($type==='HYPERLINK'){
+        $content = explode(",", $content);
+        $link = trim($content[0], '"');
+        $text = trim($content[1], '"');
+        return "<a href='{$link}'>{$text}</a>";
+      } else {
+        return $data;
+      }
     }
 }

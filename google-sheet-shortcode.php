@@ -16,11 +16,11 @@ function google_sheets_shortcode()
             'sheetid' => '',
             'content_range' => 'Sheet1',
             'email_row_index' => 'null',
-            'cols_count' => '',
             'table_id' => '',
             'table_class' => '',
-            'allow_editing' => false,
-            'edit_btn_class_name' => 'google-sheets-row-edit-btn',
+            'offset' => 0,
+            'value-render-option' => '',
+            'date-time-render-option' => '',
         ],
           $atts,
           $tag
@@ -31,7 +31,14 @@ function google_sheets_shortcode()
 
         if($spreadsheetId === '') return 'Spreadsheet ID missing';
 
-        $values = $googleSheets->get_spreadsheet_values($spreadsheetId, $range);
+        $optParams = [];
+        $optParams['valueRenderOption'] = $wporg_atts['value-render-option'];
+        $optParams['dateTimeRenderOption'] = $wporg_atts['date-time-render-option'];
+
+        $values = $googleSheets->get_spreadsheet_values($spreadsheetId, $range, $optParams);
+        $values = array_slice($values, $wporg_atts['offset']);
+        
+        $columnsCount = sizeof($values[0]);
         
         if(!$values) return "Could not find the spreadsheet";
 
@@ -44,7 +51,7 @@ function google_sheets_shortcode()
                     </tr>
                   </thead>
                   <tbody>
-                  ".$googleSheets->get_multple_row_html(array_slice($values, 1), $wporg_atts['email_row_index'], $wporg_atts['cols_count'], 0)."
+                  ".$googleSheets->get_multple_row_html(array_slice($values, 1), $wporg_atts['email_row_index'], $columnsCount, 0)."
                   </tbody>
                   </table>
         ";
