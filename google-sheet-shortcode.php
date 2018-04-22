@@ -58,6 +58,15 @@ function google_sheets_shortcode()
         
         return $html;
     }
+
+    function display_google_sheets_complete(){
+      $googleSheets = new GoogleSheets();
+      // return 
+      return $googleSheets->getSheetsListingHtml('1hBP_kzSRZP5RZ7nedwGZY_I1gerFuo3j6R97ziiBM9w');
+    }
+
     add_shortcode('google_sheets', 'display_google_sheets_content');
+    add_shortcode('google_sheets_complete', 'display_google_sheets_complete');
 }
 add_action('init', 'google_sheets_shortcode');
+
