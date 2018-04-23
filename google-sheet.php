@@ -167,24 +167,4 @@ class GoogleSheets
         return $data;
       }
     }
-
-    public function getSheetsListingHtml($sheetId){
-      $html = '';
-      $sheets = $this->get_all_sheets($sheetId);
-
-      $html .= '<ul>';
-      foreach ($sheets as $key => $sheet) {
-          $title = $sheet->properties['title'];
-          $sheetid = $sheet->properties['sheetId'];
-          $html .= '<li>
-            <a href="?sheet_name='.$title.'">'.$title.'
-            </a>
-            </li>';
-      }
-      $html .= '</ul>';
-
-      $sheetname = isset($_GET['sheet_name']) ? $_GET['sheet_name'] : $sheets[0]->properties['title'];
-      $html .= do_shortcode("[google_sheets table_class='display compact' table_id='table1' sheetid='1hBP_kzSRZP5RZ7nedwGZY_I1gerFuo3j6R97ziiBM9w' content_range='${sheetname}']");
-      return $html;
-    }
 }

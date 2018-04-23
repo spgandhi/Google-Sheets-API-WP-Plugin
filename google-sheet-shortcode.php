@@ -59,10 +59,52 @@ function google_sheets_shortcode()
         return $html;
     }
 
-    function display_google_sheets_complete(){
+    function display_google_sheets_complete($atts = [], $content = null, $tag = ''){
+
+       // normalize attribute keys, lowercase
+       $atts = array_change_key_case((array)$atts, CASE_LOWER);
+       wp_reset_query();
+       // override default attributes with user attributes
+       $wporg_atts = shortcode_atts(
+         [
+           'sheetid' => '',
+           'content_range' => 'Sheet1',
+           'email_row_index' => 'null',
+           'table_id' => '',
+           'table_class' => '',
+           'offset' => 0,
+           'value-render-option' => 'FORMATTED_VALUE',
+           'date-time-render-option' => 'FORMATTED_STRING',
+       ],
+         $atts,
+         $tag
+       );
+      
+      if($spreadsheetId === '') return 'Spreadsheet ID missing';
+
       $googleSheets = new GoogleSheets();
       // return 
-      return $googleSheets->getSheetsListingHtml('1hBP_kzSRZP5RZ7nedwGZY_I1gerFuo3j6R97ziiBM9w');
+      $html = '';
+      $sheets = $googleSheets->get_all_sheets($wporg_atts['sheetid']);
+
+      $html .= '<ul>';
+      foreach ($sheets as $key => $sheet) {
+          $title = $sheet->properties['title'];
+          $sheetid = $sheet->properties['sheetId'];
+          $html .= '<li>
+            <a href="?sheet_name='.$title.'">'.$title.'
+            </a>
+            </li>';
+      }
+      $html .= '</ul>';
+
+      $html .= "<h3>{$_GET['sheet_name']}</h3>";
+
+      $sheetname = isset($_GET['sheet_name']) ? $_GET['sheet_name'] : $sheets[0]->properties['title'];
+      $wporg_atts['content_range'] = $sheetname;
+      $html .= display_google_sheets_content($wporg_atts);
+      
+      return $html;
     }
 
     add_shortcode('google_sheets', 'display_google_sheets_content');
