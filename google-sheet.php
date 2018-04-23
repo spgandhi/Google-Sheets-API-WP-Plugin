@@ -178,7 +178,7 @@ class GoogleSheets
           $sheetid = $sheet->properties['sheetId'];
           $html .= '<li>
             <a href="?sheet_name='.$title.'">'.$title.'
-            </a> <a href="'.$sheet_url.'edit#gid='.$sheetid.'">Edit</a>
+            </a>
             </li>';
       }
       $html .= '</ul>';
