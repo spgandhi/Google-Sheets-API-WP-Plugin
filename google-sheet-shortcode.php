@@ -97,11 +97,11 @@ function google_sheets_shortcode()
             </li>';
       }
       $html .= '</ul>';
+      $sheetName = isset($_GET['sheet_name']) ? $_GET['sheet_name'] : $sheets[0]->properties['title'];
 
-      $html .= "<h3>{$_GET['sheet_name']}</h3>";
+      $html .= "<h5>{$sheetName}</h5>";
 
-      $sheetname = isset($_GET['sheet_name']) ? $_GET['sheet_name'] : $sheets[0]->properties['title'];
-      $wporg_atts['content_range'] = $sheetname;
+      $wporg_atts['content_range'] = $sheetName;
       $html .= display_google_sheets_content($wporg_atts);
       
       return $html;
